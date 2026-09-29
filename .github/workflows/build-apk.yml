@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -37,3 +37,14 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
+
+      - name: Preparar APK instalável
+        run: cp app/build/outputs/apk/debug/app-debug.apk Baixador_Lives_Android_v1.0.0.apk
+
+      - name: Criar versão para download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v1.0.0 Baixador_Lives_Android_v1.0.0.apk \
+            --title "Baixador de Lives Android v1.0.0" \
+            --notes "APK instalável para Android. Permite baixar vídeos, lives, playlists e áudio MP3 quando autorizado pelo titular do conteúdo."
