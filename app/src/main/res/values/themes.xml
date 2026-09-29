@@ -1,0 +1,6 @@
+<resources>
+    <style name="Theme.BaixadorLives" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item><item name="colorSecondary">#16A085</item>
+        <item name="android:fontFamily">sans</item><item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>
