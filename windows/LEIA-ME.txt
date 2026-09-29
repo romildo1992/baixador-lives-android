@@ -1,0 +1,19 @@
+BAIXADOR DE VÍDEOS E LIVES PARA WINDOWS — v1.0.0
+
+Instale pelo arquivo Instalador_Baixador_Videos_Lives_Windows_v1.0.0.exe.
+
+Recursos:
+- Vídeos comuns, Shorts, lives e playlists do YouTube.
+- Vídeo em 480p, 720p, 1080p, 1440p, 2160p ou melhor qualidade.
+- MP3 em 128, 192, 256 ou 320 kbps.
+- Seleção de itens de playlists.
+- Fila com até dois downloads simultâneos.
+- Pausar preserva os arquivos parciais; Continuar usa esses arquivos.
+- Finalizar agora tenta gerar um arquivo reproduzível com o conteúdo já recebido.
+- Escolha e memorização da pasta de destino.
+- Limpar concluídos ou limpar toda a lista não apaga arquivos do computador.
+
+Para lives, o aplicativo solicita o conteúdo desde o início quando o YouTube mantém
+DVR e segmentos retroativos disponíveis. Essa disponibilidade é controlada pelo YouTube.
+
+Use somente para conteúdo próprio, de domínio público ou com autorização do titular.
