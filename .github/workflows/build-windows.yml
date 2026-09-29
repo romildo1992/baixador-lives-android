@@ -1,0 +1,69 @@
+name: Compilar aplicativo Windows
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "windows/**"
+      - ".github/workflows/build-windows.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 35
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Configurar .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Compilar aplicativo
+        shell: pwsh
+        run: |
+          dotnet publish windows/BaixadorLivesWindows/BaixadorLivesWindows.csproj `
+            -c Release -r win-x64 --self-contained true `
+            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
+            -o windows/publish
+
+      - name: Baixar ferramentas oficiais
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force windows/tools | Out-Null
+          Invoke-WebRequest https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe -OutFile windows/tools/yt-dlp.exe
+          Invoke-WebRequest https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip -OutFile "$env:RUNNER_TEMP/ffmpeg.zip"
+          Expand-Archive "$env:RUNNER_TEMP/ffmpeg.zip" "$env:RUNNER_TEMP/ffmpeg" -Force
+          Copy-Item (Get-ChildItem "$env:RUNNER_TEMP/ffmpeg" -Filter ffmpeg.exe -Recurse | Select-Object -First 1).FullName windows/tools/ffmpeg.exe
+          Copy-Item (Get-ChildItem "$env:RUNNER_TEMP/ffmpeg" -Filter ffprobe.exe -Recurse | Select-Object -First 1).FullName windows/tools/ffprobe.exe
+
+      - name: Instalar compilador do instalador
+        shell: pwsh
+        run: choco install innosetup -y --no-progress
+
+      - name: Gerar instalador
+        shell: pwsh
+        working-directory: windows
+        run: '& "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss'
+
+      - name: Publicar artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: Instalador_Baixador_Videos_Lives_Windows_v1.0.0
+          path: windows/dist/Instalador_Baixador_Videos_Lives_Windows_v1.0.0.exe
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Criar versão para Windows
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create windows-v1.0.0 windows/dist/Instalador_Baixador_Videos_Lives_Windows_v1.0.0.exe `
+            --title "Baixador de Vídeos e Lives para Windows v1.0.0" `
+            --notes "Instalador para Windows 10 e 11. Inclui yt-dlp e FFmpeg. Use somente para conteúdo que você tem autorização para baixar."
